@@ -6,7 +6,7 @@ def neighbour_update():
     return
 
 # initialize system
-def initialise_system(n, inside, t_inner, t_top=0, t_tank=0):
+def initialise_system(n=4, inside=2, h_tank=1, t_inner=3, t_top=2, t_tank=1):
     # start grid
     grid = np.zeros((n, n))
 
@@ -19,11 +19,13 @@ def initialise_system(n, inside, t_inner, t_top=0, t_tank=0):
     grid[0, 0:] = t_top
 
     # set tank temp
-    # bottom
-    grid[n-1, 0:] = t_tank
+    bottom = n -1
+    grid[bottom, 0:] = t_tank
+    grid[bottom-h_tank:, 0] = t_tank
+    grid[bottom-h_tank:, n-1] = t_tank
 
     return grid
 
 
-grid = initialise_system(4, 2, 2, 1, 3)
+grid = initialise_system()
 print(grid)
