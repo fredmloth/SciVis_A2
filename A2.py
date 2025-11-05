@@ -16,7 +16,7 @@ def initialise_system(n, inside, t_inner, t_top=0, t_tank=0):
     grid[start:end, start:end] = t_inner
 
     # set top temp
-    #grid[] = t_top
+    grid[0, 0:] = t_top
 
 
     # set tank temp
@@ -24,5 +24,5 @@ def initialise_system(n, inside, t_inner, t_top=0, t_tank=0):
     return grid
 
 
-grid = initialise_system(4, 2, 2)
+grid = initialise_system(4, 2, 2, 1)
 print(grid)
