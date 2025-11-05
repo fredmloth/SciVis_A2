@@ -18,11 +18,12 @@ def initialise_system(n, inside, t_inner, t_top=0, t_tank=0):
     # set top temp
     grid[0, 0:] = t_top
 
-
     # set tank temp
-    #grid[] = t_tank
+    # bottom
+    grid[n-1, 0:] = t_tank
+
     return grid
 
 
-grid = initialise_system(4, 2, 2, 1)
+grid = initialise_system(4, 2, 2, 1, 3)
 print(grid)
