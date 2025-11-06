@@ -41,6 +41,13 @@ class Grid():
         g[bottom-self.h_tank + 1:, 0] = self.t_tank
         g[bottom-self.h_tank + 1:, self.n-1] = self.t_tank
 
+        # set linear increase
+        start_increase = self.n - self.h_tank + 1
+        increase = np.linspace(self.t_top, self.t_tank, start_increase)
+        g[:start_increase, 0] = increase
+        g[:start_increase, -1] = increase
+        print(g)
+
         return g
     
     def mask(self):
@@ -57,45 +64,27 @@ class Grid():
         m[bottom, :] = True
         m[bottom - self.h_tank + 1:, 0] = True
         m[bottom - self.h_tank + 1:, -1] = True
+        #print(m)
 
         return m
+    
+    def neighbour_update(self):
+        
+        # update according to neighboring squares
+        # vectorize
+        # only update for grid spaces where mask is False
+        g = self.grid
+        for i in range(0, self.n):
+            for j in range(0, self.n):
+                g[i,j] = 1/4 * (g[i-1, j] + g[i+1,j] + g[i,j-1] + g[i, j+1])
+
+        return g
 
 
 g = Grid()
-print(g.grid)
-print(g.mask)
+#g.neighbour_update()
 
 
-
-# update all neighbours (at the same time, vectorize)
-def neighbour_update():
-
-    return
-
-# initialize system
-def initialise_system(n=6, center=2, h_tank=1, t_inner=3, t_top=2, t_tank=1):
-    # start grid
-    grid = np.zeros((n, n))
-
-    # set inner temp
-    start = (n - center) // 2
-    end = start + center
-    grid[start:end, start:end] = t_inner
-
-    # set top temp
-    grid[0, 0:] = t_top
-
-    # set tank temp
-    bottom = n -1
-    grid[bottom, 0:] = t_tank
-    grid[bottom-h_tank:, 0] = t_tank
-    grid[bottom-h_tank:, n-1] = t_tank
-
-    return grid
-
-def reset_temps(grid):
-
-    return grid
 
 
 #grid = initialise_system()
