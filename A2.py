@@ -1,6 +1,8 @@
 import numpy as np
 
 class Grid():
+    """This class initiates a grid. Proportions are listed according to 
+    the given experiment and ensure the grid sclaes appropriately."""
     # Define proportions
     _BIG = 9
     _CENTER = 3
@@ -49,6 +51,8 @@ class Grid():
         return g
     
     def mask(self):
+        """Creates a boolean mask of grid spaces that should remain the 
+        same temperature for True."""
         m = np.zeros((self.n, self.n), dtype=bool)
 
         # center
@@ -65,17 +69,22 @@ class Grid():
 
         return m
     
-    def neighbour_update(self):
-        
-        # update according to neighboring squares
-        # vectorize
-        # only update for grid spaces where mask is False
-        g = self.grid
-        for i in range(0, self.n):
-            for j in range(0, self.n):
-                g[i,j] = 1/4 * (g[i-1, j] + g[i+1,j] + g[i,j-1] + g[i, j+1])
+    def neighbour_update(grid, self):
+        """Does not directly update the grid, set 
+        self.grid = self.neighbour_update(self.grid) in code"""
+        g = grid.copy()
 
-        return g
+        # pad grid to enable vectorized updating (faster)
+        padded = np.pad(g, 1, mode='edge')
+
+        new = 0.25 * (
+            padded[:-2, 1:-1] +
+            padded[2:, 1:-1] +
+            padded[1:-1, :-2] +
+            padded[1:-1, 2:])
+        
+        grid = np.where(self.mask, grid, new)
+        return grid
 
 
 g = Grid()
