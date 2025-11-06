@@ -46,8 +46,6 @@ class Grid():
         increase = np.linspace(self.t_top, self.t_tank, start_increase)
         g[:start_increase, 0] = increase
         g[:start_increase, -1] = increase
-        print(g)
-
         return g
     
     def mask(self):
@@ -62,9 +60,8 @@ class Grid():
 
         bottom = self.n - 1
         m[bottom, :] = True
-        m[bottom - self.h_tank + 1:, 0] = True
-        m[bottom - self.h_tank + 1:, -1] = True
-        #print(m)
+        m[:, 0] = True
+        m[:, -1] = True
 
         return m
     
