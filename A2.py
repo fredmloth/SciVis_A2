@@ -3,6 +3,7 @@
 # Written by Frederieke Loth, 12016926
 
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
@@ -144,8 +145,26 @@ def animate_from_history(g, interval=10):
     return ani
 
 
+def export_to_csv(g, out_dir="out", prefix="grid"):
+    """Exports the information from history to a csv file per grid"""
+    os.makedirs(out_dir, exist_ok=True)
+    n = g.n
+
+    # xx is row index, yy is col index
+    ii, jj = np.indices((n,n))
+
+    for t, arr in enumerate(g.history):
+        table = np.column_stack((ii.ravel(), jj.ravel(), arr.ravel()))
+        fname = os.path.join(out_dir, f"{prefix}_{t:04d}.csv")
+        np.savetxt(fname, table, delimiter=",", fmt=["%d", "%d", "%.6f"],
+                   header="i, j, T", comments="")
+        
+    print(f"Wrote {len(g.history)} files to {out_dir} with prefix '{prefix}_####.csv'")
+
 if __name__ == "__main__":
     g = Grid(scale=1)
     g.solve(tolerance=0.5)
     animate_from_history(g, interval=10)
     print("iters:", g.iters, "final max Δ:", g.last_max_t, "saved:", len(g.history))
+
+    export_to_csv(g, out_dir="out", prefix="grid")
