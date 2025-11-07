@@ -4,9 +4,9 @@ class Grid():
     """This class initiates a grid. Proportions are listed according to 
     the given experiment and ensure the grid sclaes appropriately."""
     # Define proportions
-    _BIG = 9
-    _CENTER = 3
-    _TANK = 4
+    _BIG = 20
+    _CENTER = 4
+    _TANK = 9
 
     def __init__(
             self,
