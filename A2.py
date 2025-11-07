@@ -58,7 +58,6 @@ class Grid():
         # set linear increase
         start_increase = self.n - self.h_tank + 1
         increase = np.linspace(self.t_top, self.t_tank, start_increase)
-        print(increase)
         g[:start_increase, 0] = increase
         g[:start_increase, -1] = increase
         return g
@@ -172,7 +171,7 @@ def plot_heatmap(g, steps=(0, 25, 50, "final"), fname="snapshots.png"):
     cbar.set_label("Temperature")
 
     fig.suptitle(f"Heat diffusion snapshots (iters={g.iters}, final Δ={g.last_max_t:.3f})")
-    fig.savefig(fname, dpi=300, bbox_inches="tight")
+    fig.savefig(os.path.join("figures", fname), dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -197,7 +196,7 @@ def plot_three_inits_panel(t_values=[0, 32.0], t_low=32.0, t_high=100.0, steps=(
     ]
 
     # Choose frames and labels
-    def resolve_idxs(history, steps):
+    def resolve_idxs(history, steps=steps):
         last = len(history) - 1
         idxs, labs = [], []
         for s in steps:
@@ -247,7 +246,7 @@ def plot_three_inits_panel(t_values=[0, 32.0], t_low=32.0, t_high=100.0, steps=(
     cbar.set_label("Temperature", fontsize=12)
 
     fig.suptitle("Heat diffusion across 3 initializations.", fontsize=16)
-    fig.savefig("three_inits_panel.png", dpi=300, bbox_inches="tight")
+    fig.savefig(os.path.join("figures", "three_inits_panel.png"), dpi=300, bbox_inches="tight")
     plt.close(fig)
     print("Saved three_inits_panel.png")
     print(f"(1) mode=1, t_value=0 > iters: {g1.iters}, final Δ={g1.last_max_t:.3f}")
@@ -306,4 +305,5 @@ if __name__ == "__main__":
     g = Grid(scale=1)
     g.solve(tolerance=0.5)
     export_to_csv(g, out_dir="out", prefix="grid")
+    plot_heatmap(g, steps=(0, 25, 50, "final"), fname="snapshots.png")
     animate_from_history(g, interval=10)
