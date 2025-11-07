@@ -1,4 +1,10 @@
+# This module runs the code for the second assignment of 
+# Scientific Visualisation and Virtual Reality
+# Written by Frederieke Loth, 12016926
+
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 class Grid():
     """This class initiates a grid. Proportions are listed according to 
@@ -61,9 +67,7 @@ class Grid():
         m[start:end, start:end] = True
 
         m[0, :] = True
-
-        bottom = self.n - 1
-        m[bottom, :] = True
+        m[-1, :] = True
         m[:, 0] = True
         m[:, -1] = True
 
@@ -83,11 +87,40 @@ class Grid():
             padded[1:-1, :-2] +
             padded[1:-1, 2:])
         
-        grid = np.where(self.mask, grid, new)
-        return grid
+        return np.where(self.mask, grid, new)
+    
+    def solve(self, tolerance=0.5, max_iters=10000, save_steps=1):
+        """Iterate neighbour updates until maximum t change < 0.5 OR the 
+        max iteration is reached. Saves the grid for every save_steps."""
+        # store values and history for later use
+        current = self.grid.copy()
+        self.history = [current.copy()]
+        self.iters = 0
+        self.last_max_t = None
+
+        # iterate over update for tolerance or max iterations
+        for i in range(1, max_iters+1):
+            next_grid = self.neighbour_update(current)
+            self.history.append(next_grid)
+            max_t = np.max(np.abs(next_grid - current))
+            self.last_max_t = max_t
+            self.iters = i
+
+            if max_t < tolerance:
+                self.grid = next_grid
+                return self.grid
+            
+            current = next_grid
+
+        # update the grid from history
+        self.grid = self.history[-1]
+
+        return self.grid
 
 
-g = Grid()
-print(g.grid)
-g_new = g.neighbour_update(g.grid)
-print(g_new)
+if __name__ == "__main__":
+    g = Grid(scale=1)
+    g.solve(tolerance=0.5)
+    print("iters:", g.iters, "final max Δ:", g.last_max_t, "saved:", len(g.history))
+
+    # animate_grid(g)
