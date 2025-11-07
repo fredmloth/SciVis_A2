@@ -118,9 +118,34 @@ class Grid():
         return self.grid
 
 
+def animate_from_history(g, interval=10):
+    """Animate the grid heatmap from history"""
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.set_title(f"Heat diffusion (iters: {g.iters}, final Δ={g.last_max_t:.3f})")
+    ax.set_xticks([]); ax.set_yticks([])
+
+    # Fixed color scale
+    vmin = min(g.t_tank, g.t_top, g.t_inner)
+    vmax = max(g.t_tank, g.t_top, g.t_inner)
+
+    im = ax.imshow(g.history[0], origin='upper', vmin=vmin, vmax=vmax)
+    cbar = fig.colorbar(im, ax=ax, shrink=0.8)
+    cbar.set_label("Temperature")
+
+    # set the correct updating function from history
+    def update(i):
+        im.set_data(g.history[i])
+        return (im,)
+
+    ani = FuncAnimation(fig, update, frames=len(g.history), interval=interval, blit=True)
+    plt.tight_layout()
+    plt.show()
+
+    return ani
+
+
 if __name__ == "__main__":
     g = Grid(scale=1)
     g.solve(tolerance=0.5)
+    animate_from_history(g, interval=10)
     print("iters:", g.iters, "final max Δ:", g.last_max_t, "saved:", len(g.history))
-
-    # animate_grid(g)
