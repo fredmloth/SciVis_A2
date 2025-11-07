@@ -69,7 +69,7 @@ class Grid():
 
         return m
     
-    def neighbour_update(grid, self):
+    def neighbour_update(self, grid):
         """Does not directly update the grid, set 
         self.grid = self.neighbour_update(self.grid) in code"""
         g = grid.copy()
@@ -88,10 +88,6 @@ class Grid():
 
 
 g = Grid()
-#g.neighbour_update()
-
-
-
-
-#grid = initialise_system()
-#print(grid)
+print(g.grid)
+g_new = g.neighbour_update(g.grid)
+print(g_new)
